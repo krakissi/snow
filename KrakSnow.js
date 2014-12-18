@@ -5,8 +5,8 @@
 	A cute snow effect rendered with double-buffering on a pair of HTML5 canvases.
 
 	In order to use this effect, you should have on your page:
-		<canvas id=snowscape style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
-		<canvas id=snowscape2 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
+		<canvas id=snowscape style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
+		<canvas id=snowscape2 style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
 */
 
 var KrakSnow = {
