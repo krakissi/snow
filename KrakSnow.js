@@ -5,8 +5,8 @@
 	A cute snow effect rendered with double-buffering on a pair of HTML5 canvases.
 
 	In order to use this effect, you should have on your page:
-		<canvas id=snowscape style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1"></canvas>
-		<canvas id=snowscape2 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1"></canvas>
+		<canvas id=snowscape style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
+		<canvas id=snowscape2 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
 */
 
 var KrakSnow = {
@@ -45,9 +45,8 @@ var KrakSnow = {
 			for(var k in scene)
 				this.scene[k] = scene[k];
 
-		var snowscape = this.get_frame();
-		snowscape.width = KrakSnow.scene.w = document.documentElement.clientWidth;
-		snowscape.height = KrakSnow.scene.h = document.documentElement.clientHeight;
+		this.resize();
+		window.addEventListener('resize', this.resize);
 		this.scene.count = parseInt(snowscape.width / 20);
 
 		this.context = snowscape.getContext('2d');
@@ -57,8 +56,6 @@ var KrakSnow = {
 			this.flake_make(true);
 
 		KrakSnow.flake_update();
-
-		window.addEventListener('resize', this.resize);
 	},
 
 
@@ -67,15 +64,15 @@ var KrakSnow = {
 		var active;
 
 		if(this.drawflag){
-			document.getElementById('snowscape').style['z-index'] = -1;
+			document.getElementById('snowscape').style['visibility'] = 'visible';
 
 			active = document.getElementById('snowscape2');
-			active.style['z-index'] = -2;
+			active.style['visibility'] = 'hidden';
 		} else {
-			document.getElementById('snowscape2').style['z-index'] = -1;
+			document.getElementById('snowscape2').style['visibility'] = 'visible';
 
 			active = document.getElementById('snowscape');
-			active.style['z-index'] = -2;
+			active.style['visibility'] = 'hidden';
 		}
 
 		this.context = active.getContext('2d');
@@ -175,9 +172,8 @@ var KrakSnow = {
 			return x;
 		};
 
-		// Solid background for the snow fall. This is necessary for double-buffering.
-		ctx.fillStyle = '#000000';
-		ctx.fillRect(0, 0, this.scene.w, this.scene.h);
+		// Clear the current frame.
+		ctx.clearRect(0, 0, this.scene.w, this.scene.h);
 
 		var angle = wind_angle / 180 * Math.PI;
 		flakes.forEach(function(flake, index, array){

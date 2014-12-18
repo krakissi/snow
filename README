@@ -12,8 +12,8 @@ like this:
 In order for the snow effect to render, it needs a pair of canvases. In
 your body, add:
 
-	<canvas id=snowscape style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1"></canvas>
-	<canvas id=snowscape2 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1"></canvas>
+	<canvas id=snowscape style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
+	<canvas id=snowscape2 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none"></canvas>
 
 The snow is configurable. Look at KrakSnow.scene to see what parameters
 may be applied.
