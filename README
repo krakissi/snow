@@ -17,3 +17,8 @@ your body, add:
 
 The snow is configurable. Look at KrakSnow.scene to see what parameters
 may be applied.
+
+NOTE: If you change from position: fixed to position: absolute, the snow
+will fall the entire length of your page, rather than being attached to
+the browser window. This effect may be desirable, although somewhat
+performance intensive. Try it and see!
