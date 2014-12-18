@@ -1,0 +1,19 @@
+KrakSnow
+Mike Perron(2014)
+
+A cute snow effect for your page. Read the comments in the javascript
+source for more information about using this.
+
+You should include this source file in the head of your HTML document
+like this:
+
+	<script type=text/javascript src=KrakSnow.js></script>
+
+In order for the snow effect to render, it needs a pair of canvases. In
+your body, add:
+
+	<canvas id=snowscape style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1"></canvas>
+	<canvas id=snowscape2 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1"></canvas>
+
+The snow is configurable. Look at KrakSnow.scene to see what parameters
+may be applied.
