@@ -20,11 +20,11 @@ var KrakSnow = {
 
 	// Configurable parameters for the current scene.
 	scene: {
+		intensity: 100,
 		minSpeed: 20,
 		maxSpeed: 100,
 		sway: 50,
 		size: 4,
-		count: 50,
 		wind_force: 30,
 		wind_angle: 90,
 		fps: 45
@@ -47,7 +47,6 @@ var KrakSnow = {
 
 		this.resize();
 		window.addEventListener('resize', this.resize);
-		this.scene.count = parseInt(snowscape.width / 20);
 
 		this.context = snowscape.getContext('2d');
 		this.snowing = true;
@@ -115,7 +114,7 @@ var KrakSnow = {
 		snowscape.width = KrakSnow.scene.w;
 		snowscape.height = KrakSnow.scene.h;
 
-		KrakSnow.scene.count = parseInt(snowscape.width / 40);
+		KrakSnow.scene.count = parseInt(((snowscape.width / 40) + (snowscape.height / 60)) * (KrakSnow.scene.intensity / 100));
 	},
 
 	// Produce a new random snow flake
