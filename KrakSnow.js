@@ -102,6 +102,8 @@ Snow.prototype = {
 			snowscape.style.display = snowscape2.style.display = 'block';
 			this.flake_update();
 		}
+
+		localStorage.setItem('KrakSnow.snowing', this.snowing);
 	},
 
 	// Adjust the canvas, based on the size of the window
@@ -237,6 +239,16 @@ class KrakSnow extends HTMLElement {
 
 				pointer-events: none;
 			}
+			a {
+				background-color: black;
+				color: white;
+				padding: 4px;;
+				border-radius: 3px;;
+			}
+			a:hover {
+				cursor: pointer;
+				color: yellow;
+			}
 		`;
 
 		// Create canvas elements and pass into KrakSnow
@@ -265,6 +277,23 @@ class KrakSnow extends HTMLElement {
 		snow.scene.blue = (blue / 100);
 
 		snow.init();
+
+		// Show a "Toggle Snow" link if the toggle attribute is set.
+		if(this.hasAttribute('toggle')){
+			var toggleElement = document.createElement('a');
+
+			toggleElement.textContent = 'Toggle Snow';
+			toggleElement.addEventListener('click', function(){
+				snow.toggle();
+			});
+
+			shadow.appendChild(toggleElement);
+		}
+
+		// If the element has the hidden attribute, or the user has hidden the
+		// effect before, we'll hide it by default.
+		if(this.hasAttribute('notsnowing') || (localStorage.getItem('KrakSnow.snowing') === 'false'))
+			snow.toggle();
 	}
 };
 
