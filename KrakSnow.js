@@ -30,12 +30,12 @@ export default function Snow(config){
 
 		// Configurable parameters for the current scene.
 		scene: {
-			intensity: 100,
+			intensity: 200,
 			minSpeed: 20,
 			maxSpeed: 100,
 			sway: 50,
 			size: 4,
-			wind_force: 30,
+			wind_force: 50,
 			wind_angle: 90,
 			fps: 45,
 
@@ -87,7 +87,7 @@ Snow.prototype = {
 		this.snowing = true;
 
 		for(var i = 0; i < this.scene.count; i++)
-			this.flake_make(true);
+			this.flakes.push(this.flake_make(true));
 
 		this.flake_update();
 	},
@@ -128,31 +128,48 @@ Snow.prototype = {
 	// Produce a new random snow flake
 	flake_make: function(randomY){
 		var fill = parseInt(Math.random() * 0xEF);
-		fill = ('#' +
-			(fill * this.scene.red + 0x10).toString(16) +
-			(fill * this.scene.green + 0x10).toString(16) +
-			(fill * this.scene.blue + 0x10).toString(16)
-		);
 
-		this.flakes.push({
+		return {
 			cx: Math.random() * this.scene.w,
 			cy: randomY ? (Math.random() * this.scene.h) : -this.scene.size,
 			r: Math.random() * this.scene.size,
 			speed: Math.random() * (this.scene.maxSpeed - this.scene.minSpeed) + this.scene.minSpeed,
 			offset: Math.random() * 2 * Math.PI,
 			amplitude: Math.random() * this.scene.sway,
-			fill: fill
-		});
+			fill: ('#' +
+				(fill * this.scene.red + 0x10).toString(16) +
+				(fill * this.scene.green + 0x10).toString(16) +
+				(fill * this.scene.blue + 0x10).toString(16)
+			)
+		};
+	},
+
+	// Calculate the X-axis variance caused by sinusoidal sway.
+	sway: function(flake){
+		var width = this.scene.w;
+		var x = flake.cx;
+
+		x += Math.sin(flake.offset + flake.cy / 100) * flake.amplitude;
+
+		// Wrap the flakes on the east/west edges of the screen.
+		if(x > (width + (2 * flake.r)))
+			x -= (width + (4 * flake.r));
+		else if(x < (-2 * flake.r))
+			x += width + (4 * flake.r);
+
+		return x;
 	},
 
 	// Erase the old flake position, adjust the parameters of the flake, and draw again.
 	flake_update: function(newTime){
 		var ctx = this.context;
-		var flakes = this.flakes;
 		var height = this.scene.h;
-		var width = this.scene.w;
 		var wind_angle = this.scene.wind_angle;
 		var wind_force = this.scene.wind_force;
+
+		// Prevent doubling by clearing the timeout.
+		if(this.interval)
+			clearTimeout(this.interval);
 
 		// Calculate how long it's been since the last frame in seconds.
 		if(!newTime)
@@ -163,55 +180,28 @@ Snow.prototype = {
 		) / 1000);
 		this.lastUpdateTime = newTime;
 
-		// Prevent doubling by clearing the timeout.
-		if(this.interval)
-			clearTimeout(this.interval);
-
-		// No flakes at all! Create a new array.
-		if(!flakes)
-			flakes = [];
-
-		// Calculate the X-axis variance caused by sinusoidal sway.
-		var sway = function(flake){
-			var x = flake.cx;
-
-			x += Math.sin(flake.offset + flake.cy / 100) * flake.amplitude;
-
-			// Wrap the flakes on the east/west edges of the screen.
-			if(x > (width + (2 * flake.r)))
-				x -= (width + (4 * flake.r));
-			else if(x < (-2 * flake.r))
-				x += width + (4 * flake.r);
-
-			return x;
-		};
-
 		// Clear the current frame.
 		ctx.clearRect(0, 0, this.scene.w, this.scene.h);
 
 		var angle = wind_angle / 180 * Math.PI;
-		this.flakes = flakes.filter(flake => {
+		for(let i = 0, len = this.flakes.length; i < len; i++){
+			let flake = this.flakes[i];
+
 			// fall
 			flake.cy += (flake.speed + Math.cos(angle) * wind_force) * time;
 			flake.cx += (Math.random() + Math.sin(angle) * wind_force) * time;
 
-			// Kill off-screen flakes.
-			if(flake.cy > (height + flake.r * 2))
-				return false;
-
-			// draw
-			ctx.beginPath();
-			ctx.arc(sway(flake), flake.cy, flake.r, 0, 2 * Math.PI);
-			ctx.fillStyle = flake.fill;
-			ctx.fill();
-
-			return true;
-		});
-
-		// Make flakes to account for those that reached the bottom and died.
-		var toMake = this.scene.count - this.flakes.length;
-		while(toMake-- > 0)
-			this.flake_make();
+			if(flake.cy > (height + flake.r * 2)){
+				// Replace this flake if it fell off screen.
+				this.flakes[i] = this.flake_make();
+			} else {
+				// Draw the flake.
+				ctx.beginPath();
+				ctx.arc(this.sway(flake), flake.cy, flake.r, 0, 2 * Math.PI);
+				ctx.fillStyle = flake.fill;
+				ctx.fill();
+			}
+		}
 
 		{
 			var me = this;
