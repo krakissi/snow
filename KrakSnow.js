@@ -52,7 +52,7 @@ export default function Snow(config){
 		interval: undefined,
 
 		// Which buffer is currently in use.
-		drawflag: false
+		drawflag: 0
 	};
 
 	for(let k in config)
@@ -61,31 +61,35 @@ export default function Snow(config){
 
 	for(let k in krakSnow)
 		this[k] = krakSnow[k];
+
+	// Instead of binding this function later, we can define it here and keep
+	// 'me' in scope.
+	{
+		var me = this;
+
+		// Flip display and draw canvases. The "active" canvas is the back buffer.
+		me.flip = function(){
+			me.buffers[me.drawflag].style['visibility'] = 'visible';
+			me.drawflag ^= 1;
+
+			var active = me.buffers[me.drawflag];
+			active.style['visibility'] = 'hidden';
+			me.context = active.getContext('2d');
+		};
+	}
 };
 Snow.prototype = {
 	init: function(){
 		this.resize();
 		window.addEventListener('resize', this.resize.bind(this));
 
-		this.context = this.buffers[0].getContext('2d');
+		this.context = this.buffers[this.drawflag].getContext('2d');
 		this.snowing = true;
 
 		for(var i = 0; i < this.scene.count; i++)
 			this.flake_make(true);
 
 		this.flake_update();
-	},
-
-	// Flip display and draw canvases. The "active" canvas is the back buffer.
-	flip: function(){
-		this.buffers[(this.drawflag ? 0 : 1)].style['visibility'] = 'visible';
-
-		var active = this.buffers[(this.drawflag ? 1 : 0)];
-		active.style['visibility'] = 'hidden';
-
-		this.context = active.getContext('2d');
-		this.drawflag = !this.drawflag;
-		return active;
 	},
 
 	// Toggle snowfall visibility and animation.
@@ -109,12 +113,12 @@ Snow.prototype = {
 	// Adjust the canvas, based on the size of the window
 	resize: function(){
 		// Resize foreground
-		var snowscape = this.buffers[(this.drawflag ? 0 : 1)];
+		var snowscape = this.buffers[this.drawflag];
 		snowscape.width = this.scene.w = document.documentElement.clientWidth;
 		snowscape.height = this.scene.h = document.documentElement.clientHeight;
 
 		// Resize background
-		snowscape = this.buffers[(this.drawflag ? 1 : 0)];
+		snowscape = this.buffers[(this.drawflag ^ 1)];
 		snowscape.width = this.scene.w;
 		snowscape.height = this.scene.h;
 
@@ -213,7 +217,7 @@ Snow.prototype = {
 			var me = this;
 
 			// Show what we drew by flipping front and back buffers.
-			window.requestAnimationFrame(me.flip.bind(me));
+			window.requestAnimationFrame(me.flip);
 
 			// Queue up the next frame.
 			me.interval = setTimeout(function(){
