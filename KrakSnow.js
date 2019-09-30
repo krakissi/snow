@@ -209,15 +209,15 @@ Snow.prototype = {
 		while(toMake-- > 0)
 			this.flake_make();
 
-		// Show what we drew by flipping front and back buffers.
-		this.flip();
-
-		// Queue up the next frame.
 		{
 			var me = this;
 
+			// Show what we drew by flipping front and back buffers.
+			window.requestAnimationFrame(me.flip.bind(me));
+
+			// Queue up the next frame.
 			me.interval = setTimeout(function(){
-				window.requestAnimationFrame(me.flake_update.bind(me));
+				me.flake_update();
 			}, 1000 / me.scene.fps);
 		}
 	}
