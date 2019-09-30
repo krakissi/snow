@@ -30,7 +30,7 @@ export default function Snow(config){
 
 		// Configurable parameters for the current scene.
 		scene: {
-			intensity: 200,
+			intensity: 100,
 			minSpeed: 20,
 			maxSpeed: 100,
 			sway: 50,
