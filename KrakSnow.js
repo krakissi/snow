@@ -123,6 +123,20 @@ Snow.prototype = {
 		snowscape.height = this.scene.h;
 
 		this.scene.count = parseInt(((snowscape.width / 40) + (snowscape.height / 60)) * (this.scene.intensity / 100));
+
+		// Adjust count of flakes.
+		{
+			let diff = (this.flakes.length - this.scene.count);
+
+			if(diff > 0){
+				// Remove excess flakes.
+				this.flakes.splice(0, diff);
+			} else if(diff < 0){
+				// Make new flakes to fill space.
+				for(var i = 0; i < -diff; i++)
+					this.flakes.push(this.flake_make(true));
+			}
+		}
 	},
 
 	// Produce a new random snow flake
@@ -218,6 +232,33 @@ Snow.prototype = {
 };
 
 class KrakSnow extends HTMLElement {
+	set intensity(val){
+		this.snow.scene.intensity = val;
+		this.snow.resize();
+	}
+	get intensity(){
+		return this.snow.scene.intensity;
+	}
+
+	set r(val){
+		this.snow.scene.red = (parseInt(val) / 100);
+	}
+	get r(){
+		return Math.floor(this.snow.scene.red * 100);
+	}
+	set g(val){
+		this.snow.scene.green = (parseInt(val) / 100);
+	}
+	get g(){
+		return Math.floor(this.snow.scene.green * 100);
+	}
+	set b(val){
+		this.snow.scene.blue = (parseInt(val) / 100);
+	}
+	get b(){
+		return Math.floor(this.snow.scene.blue * 100);
+	}
+
 	constructor(){
 		super();
 
@@ -257,19 +298,28 @@ class KrakSnow extends HTMLElement {
 		shadow.appendChild(buffers[0]);
 		shadow.appendChild(buffers[1]);
 
-		// Get color adjustments (as a percentage 0-100)
-		var red = (this.hasAttribute('r') ? parseInt(this.getAttribute('r')) : 100);
-		var green = (this.hasAttribute('g') ? parseInt(this.getAttribute('g')) : 100);
-		var blue = (this.hasAttribute('b') ? parseInt(this.getAttribute('b')) : 100);
-
-		var snow = new Snow({
+		var snow = this.snow = new Snow({
 			buffers: buffers
 		});
 
-		snow.scene.red = (red / 100);
-		snow.scene.green = (green / 100);
-		snow.scene.blue = (blue / 100);
+		// Parse effect configuration from attributes.
+		{
+			let attrOrDefault = function(attr, def){
+				let val = this.getAttribute(attr);
 
+				return ((val === null) ? def : val);
+			}.bind(this);
+
+			// Get color adjustments (as a percentage 0-100)
+			snow.scene.red = parseInt(attrOrDefault('r', 100)) / 100;
+			snow.scene.green = parseInt(attrOrDefault('g', 100)) / 100;
+			snow.scene.blue = parseInt(attrOrDefault('b', 100)) / 100;
+
+			// Affects the number of flakes on screen at any given time.
+			snow.scene.intensity = parseInt(attrOrDefault('intensity', 100));
+		}
+
+		// Start the effect.
 		snow.init();
 
 		// Show a "Toggle Snow" link if the toggle attribute is set.
@@ -286,7 +336,7 @@ class KrakSnow extends HTMLElement {
 
 		// If the element has the hidden attribute, or the user has hidden the
 		// effect before, we'll hide it by default.
-		if(this.hasAttribute('notsnowing') || (localStorage.getItem('KrakSnow.snowing') === 'false'))
+		if(this.hasAttribute('notsnowing') || (this.hasAttribute('toggle') && (localStorage.getItem('KrakSnow.snowing') === 'false')))
 			snow.toggle();
 	}
 };
