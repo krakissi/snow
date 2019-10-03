@@ -1,6 +1,6 @@
 /*
 	KrakSnow
-	Mike Perron (2014)
+	Mike Perron (2014-2019)
 
 	A cute snow effect rendered with double-buffering on a pair of HTML5 canvases.
 
@@ -271,13 +271,14 @@ class KrakSnow extends HTMLElement {
 				bottom: 0;
 				left: 0;
 				z-index: 9001;
-
 				pointer-events: none;
 			}
+
+			/* For the 'toggle' link. */
 			a {
 				background-color: black;
 				color: white;
-				padding: 4px;;
+				padding: 4px;
 				border-radius: 3px;;
 			}
 			a:hover {

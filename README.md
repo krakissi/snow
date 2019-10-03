@@ -4,7 +4,7 @@ KrakSnow
 A cute snow effect for your page. Read the comments in the javascript
 source for more information about using this.
 
-Mike Perron (2014)
+Mike Perron (2014-2019)
 
 Usage
 -----
