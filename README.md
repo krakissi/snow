@@ -1,8 +1,7 @@
 KrakSnow
 --------
 
-A cute snow effect for your page. Read the comments in the javascript
-source for more information about using this.
+A cute snow effect for your page. Extremely configurable (keep reading).
 
 Mike Perron (2014-2019)
 
@@ -64,7 +63,7 @@ For a big blizzard:
 	<krak-snow intensity=1000></krak-snow>
 ```
 
-Nightmare screen distortion effect:
+Nightmare screen distortion/static effect:
 ```
-	<krak-snow intensity=200 windangle=-90 windforce=10000></krak-snow>
+	<krak-snow intensity=500 flakesize=2 windangle=-90 windforce=10000></krak-snow>
 ```
