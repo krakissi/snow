@@ -166,9 +166,9 @@ Snow.prototype = {
 		x += Math.sin(flake.offset + flake.cy / 100) * flake.amplitude;
 
 		// Wrap the flakes on the east/west edges of the screen.
-		if(x > (width + (2 * flake.r)))
+		while(x > (width + (2 * flake.r)))
 			x -= (width + (4 * flake.r));
-		else if(x < (-2 * flake.r))
+		while(x < (-2 * flake.r))
 			x += width + (4 * flake.r);
 
 		return x;
