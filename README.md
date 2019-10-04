@@ -63,3 +63,8 @@ For a big blizzard:
 ```
 	<krak-snow intensity=1000></krak-snow>
 ```
+
+Nightmare screen distortion effect:
+```
+	<krak-snow intensity=200 windangle=-90 windforce=10000></krak-snow>
+```
