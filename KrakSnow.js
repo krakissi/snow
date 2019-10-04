@@ -35,7 +35,7 @@ export default function Snow(config){
 			maxSpeed: 100,
 			sway: 50,
 			size: 4,
-			wind_force: 50,
+			wind_force: 30,
 			wind_angle: 90,
 			fps: 45,
 
@@ -259,6 +259,53 @@ class KrakSnow extends HTMLElement {
 		return Math.floor(this.snow.scene.blue * 100);
 	}
 
+	set flakesize(val){
+		this.snow.scene.size = parseInt(val);
+	}
+	get flakesize(){
+		return this.snow.scene.size;
+	}
+
+	set minspeed(val){
+		this.snow.scene.minSpeed = parseInt(val);
+	}
+	get minspeed(){
+		return this.snow.scene.minSpeed;
+	}
+	set maxspeed(val){
+		this.snow.scene.maxSpeed = parseInt(val);
+	}
+	get maxspeed(){
+		return this.snow.scene.maxSpeed;
+	}
+
+	set sway(val){
+		this.snow.scene.sway = parseInt(val);
+	}
+	get sway(){
+		return this.snow.scene.sway;
+	}
+
+	set windforce(val){
+		this.snow.scene.wind_force = parseInt(val);
+	}
+	get windforce(){
+		return this.snow.scene.wind_force;
+	}
+	set windangle(val){
+		this.snow.scene.wind_angle = parseInt(val);
+	}
+	get windangle(){
+		return this.snow.scene.wind_angle;
+	}
+
+	set fps(val){
+		this.snow.scene.fps = parseInt(val);
+	}
+	get fps(){
+		return this.snow.scene.fps;
+	}
+
 	constructor(){
 		super();
 
@@ -305,19 +352,47 @@ class KrakSnow extends HTMLElement {
 
 		// Parse effect configuration from attributes.
 		{
-			let attrOrDefault = function(attr, def){
-				let val = this.getAttribute(attr);
+			let setPropIfAttr = function(attr, prop, xmute){
+				if(prop === undefined)
+					prop = attr;
 
-				return ((val === null) ? def : val);
+				if(this.hasAttribute(attr))
+					snow.scene[prop] = (
+						(typeof xmute === 'function') ?
+							xmute(this.getAttribute(attr)) :
+							parseInt(this.getAttribute(attr))
+					);
 			}.bind(this);
 
 			// Get color adjustments (as a percentage 0-100)
-			snow.scene.red = parseInt(attrOrDefault('r', 100)) / 100;
-			snow.scene.green = parseInt(attrOrDefault('g', 100)) / 100;
-			snow.scene.blue = parseInt(attrOrDefault('b', 100)) / 100;
+			{
+				let divcent = (x => parseInt(x) / 100);
+
+				setPropIfAttr('r', 'red', divcent);
+				setPropIfAttr('g', 'green', divcent);
+				setPropIfAttr('b', 'blue', divcent);
+			}
 
 			// Affects the number of flakes on screen at any given time.
-			snow.scene.intensity = parseInt(attrOrDefault('intensity', 100));
+			setPropIfAttr('intensity');
+
+			// Scaling factor for the size of the flakes.
+			setPropIfAttr('flakesize', 'size');
+
+			// Flakes travel at a random speed somewhere between these values.
+			// This is in addition to the speed of the wind.
+			setPropIfAttr('minspeed', 'minSpeed');
+			setPropIfAttr('maxspeed', 'maxSpeed');
+
+			// Adjusts the amplitude of sinusoidal deviation along the flake's path.
+			setPropIfAttr('sway');
+
+			// Magnitude and direction of prevailing winds.
+			setPropIfAttr('windforce', 'wind_force');
+			setPropIfAttr('windangle', 'wind_angle');
+
+			// FPS limiter, to reduce client CPU load.
+			setPropIfAttr('fps');
 		}
 
 		// Start the effect.

@@ -27,15 +27,27 @@ You may set these attributes when creating the element (see examples below), or
 programmatically in javascript at any time (except those that "only apply on
 creation").
 
-- `intensity`: Percentage of flake density (default 100). Try 200, 500, etc. for more flakes.
-
-- `r`: Percentage of red in flakes (default 100)
-- `g`: Percentage of green in flakes (default 100)
-- `b`: Percentage of blue in flakes (default 100)
-
 - `notsnowing`: If this attribute is present, the snow effect will be hidden by default. This ignores the user preference. Only applies on creation.
 
 - `toggle`: Render a clickable link in the <krak-snow> element which shows/hides the snow effect. Clicking the link will store the user's preference locally. Only applies on creation.
+
+- `intensity`: (default 100) Percentage of flake density. Try 200, 500, etc. for more flakes.
+
+- `r`: (default 100) Percentage of red in flakes.
+- `g`: (default 100) Percentage of green in flakes.
+- `b`: (default 100) Percentage of blue in flakes.
+
+- `flakesize`: (default 4) Scaling factor for the size of the flakes.
+
+- `minspeed`: (default 20) Speed of the slowest flakes.
+- `maxspeed`: (default 100) Speed of the fastest flakes.
+
+- `sway`: (default 50) Scaling factor for the amplitude of sinusoidal sway in each flake's path.
+
+- `windforce`: (default 30) Strength of prevailing winds. This affects the speed and direction of flakes.
+- `windangle`: (default 90) Angle of prevailing winds. 90 is toward the right side of the screen, 0 is down, and -90 is left.
+
+- `fps`: (default 45) Maximum screen buffer flips per second. Reduce this number to reduce client CPU load (values below 24 not recommended).
 
 
 Example
