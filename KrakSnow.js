@@ -311,7 +311,7 @@ class KrakSnow extends HTMLElement {
 
 		var style = document.createElement('style');
 		style.textContent = `
-			canvas {
+			canvas.kraksnow {
 				position: fixed;
 				top: 0;
 				right: 0;
@@ -321,30 +321,22 @@ class KrakSnow extends HTMLElement {
 				pointer-events: none;
 			}
 
-			/* For the 'toggle' link. */
-			a {
-				background-color: black;
-				color: white;
-				padding: 4px;
-				border-radius: 3px;;
-			}
-			a:hover {
+			a.kraksnow {
 				cursor: pointer;
-				color: yellow;
 			}
 		`;
 
-		// Create canvas elements and pass into KrakSnow
-		let buffers = [
-			document.createElement('canvas'),
-			document.createElement('canvas')
-		];
-
 		// Attach elements to the page.
-		const shadow = this.attachShadow({ mode: 'closed' });
-		shadow.appendChild(style);
-		shadow.appendChild(buffers[0]);
-		shadow.appendChild(buffers[1]);
+		this.appendChild(style);
+
+		let buffers = [];
+		for(let i = 0; i < 2; i++){
+			let canvas = document.createElement('canvas');
+
+			canvas.classList.add('kraksnow');
+			this.appendChild(canvas);
+			buffers.push(canvas);
+		}
 
 		var snow = this.snow = new Snow({
 			buffers: buffers
@@ -402,12 +394,13 @@ class KrakSnow extends HTMLElement {
 		if(this.hasAttribute('toggle')){
 			var toggleElement = document.createElement('a');
 
+			toggleElement.classList.add('kraksnow');
 			toggleElement.textContent = 'Toggle Snow';
 			toggleElement.addEventListener('click', function(){
 				snow.toggle();
 			});
 
-			shadow.appendChild(toggleElement);
+			this.appendChild(toggleElement);
 		}
 
 		// If the element has the hidden attribute, or the user has hidden the
