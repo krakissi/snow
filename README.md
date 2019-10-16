@@ -63,6 +63,11 @@ For a big blizzard:
 	<krak-snow intensity=1000></krak-snow>
 ```
 
+Heavy rain or hail can be achieved with no sway, high speed, and small flakes:
+```
+	<krak-snow sway=0 windforce=200 windangle=-90 flakesize=2 intensity=600 maxspeed=1000 minspeed=500></krak-snow>
+```
+
 Nightmare screen distortion/static effect:
 ```
 	<krak-snow intensity=500 flakesize=2 windangle=-90 windforce=10000></krak-snow>

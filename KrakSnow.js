@@ -194,6 +194,12 @@ Snow.prototype = {
 		) / 1000);
 		this.lastUpdateTime = newTime;
 
+		// If an extreme amount of time has passed, it's probably because the
+		// rendering was paused for a while. We want to pretend this didn't
+		// happen.
+		if(time > 1)
+			time = 0.5;
+
 		// Clear the current frame.
 		ctx.clearRect(0, 0, this.scene.w, this.scene.h);
 
